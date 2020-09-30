@@ -1,0 +1,293 @@
+---
+title: General Feelings towards the president and economic struggles during current
+  presidency
+author: "Jaival Desai jd3630"
+date: "9/26/2020"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+
+```{r echo=FALSE,message=FALSE,warning=FALSE}
+library(haven)
+library(tidyverse)
+library(ggplot2)
+library(gridExtra)
+```
+
+**Remove missing data and then further split the data into Trump supporters and Biden supporters. Also check the distribution of supporters by race**
+
+```{r}
+data <- read.csv("anes_pilot_2020ets_csv.csv") %>% na.omit()
+trumpsupporters <- data[data$vote20jb==1,]
+bidensupporters <- data[data$vote20jb==2,]
+
+dt_asian <- sum(trumpsupporters$race1_asian)
+dt_black <- sum(trumpsupporters$race1_black)
+dt_hispanic <- sum(trumpsupporters$race1_hpi)
+dt_nativeamerican <- sum(trumpsupporters$race1_namer)
+dt_white <- sum(trumpsupporters$race1_white)
+
+jb_asian <- sum(bidensupporters$race1_asian)
+jb_black <- sum(bidensupporters$race1_black)
+jb_hispanic <- sum(bidensupporters$race1_hpi)
+jb_nativeamerican <- sum(bidensupporters$race1_namer)
+jb_white <- sum(bidensupporters$race1_white)
+
+dtsupporterdist <- c(dt_asian,dt_black,dt_hispanic,dt_nativeamerican,dt_white)
+jbsupporterdist <- c(jb_asian,jb_black,jb_hispanic,jb_nativeamerican,jb_white)
+
+supporter_distribution <- rbind(dtsupporterdist,jbsupporterdist)
+barplot(supporter_distribution,beside = T)
+
+```
+We can see that with the exception of white people, almost all other races have more people who prefer voting for Joe Biden over Donald Trump.
+
+```{r}
+plotgraph <-function(x){
+  return(ggplot(as.data.frame(x),aes(as.factor(x))) + 
+    geom_bar(color = 'blue', fill = rgb(0.7,0.5,0.6,0.3)))
+}
+```
+
+```{r}
+#1-> republican 2-> democratic 3->Independent 4-> Something else(Party preferences)
+plotgraph(data$pid1r[data$pid1r<=5]) + xlab("Party")
+```
+We see that there are more people who identify as democrats than republicans in this survey. We also have a good amount of voters who are independent. 
+```{r}
+plotgraph(data$inc_anes[data$inc_anes <= 26]) + xlab("Average Family Income Level")
+```
+The above graph shows the distribution of average family income. A higher number relates to a good family income. We can see that there are a lot of families that don't make a lot of money. The median is definitely lower than the mean from this distribution. 
+
+**Next, we look at some demographics. We try to see the distribution of gender, age, etc.**
+```{r}
+plotgraph(data$birthyr) + xlab("birth year")
+
+#1 -> Male 2 -> Female
+plotgraph(data$sex) + xlab("gender")
+
+#1 -> No High School Degree 2 -> High School Graduate
+#3 -> College but no degree 4 -> Associate Degree
+#5 -> Bachelors Degree      6 -> Masters Degree
+#7 -> Professional Degree   8 -> Doctorate Degree
+plotgraph(data$educ) + xlab("Education Level")
+```
+From the above distribution of education we can see that a lot of people either only finished 12th grade or went to college but never got a degree. The highest count is the group for Bachelors Degree
+
+
+**lets assess how people have generally felt about Donald Trump's performance in office over the past 4 years**
+```{r}
+#first thing we check is the average overall rating he has received
+mean(data$fttrump1)
+
+#next we check his average rating among different ethnicities
+mean(data$fttrump1[data$race1_asian==1])
+mean(data$fttrump1[data$race1_black==1])
+mean(data$fttrump1[data$race1_hpi==1])
+mean(data$fttrump1[data$race1_namer==1])
+mean(data$fttrump1[data$race1_white==1])
+```
+We can see that overall Trump has low ratings overall and they are especially low withe minorities especially among black voters. 
+
+**We proceed to see how people view Donald Trump's personality traits**
+
+```{r}
+# 1 -> Extremely Well
+# 2 -> Very Well
+# 3 -> Moderately Well
+# 4 -> Slightly Well
+# 5 -> Not Well at all
+
+dt_strong_leader <- plotgraph(data$dtleader1[data$dtleader1 <= 5]) + 
+  xlab("Strong Leader") + 
+  ylab("Count") +
+  scale_x_discrete(labels = c("Extremely Well",
+                              "Very Well",
+                              "Moderately Well",
+                              "Slightly Well",
+                              "Not Well at all"))
+dt_effective_leader <- plotgraph(data$dtleader2[data$dtleader2 <= 5]) + 
+  xlab("Effective Leader") + 
+  ylab("Count") +
+  scale_x_discrete(labels = c("Extremely Well",
+                              "Very Well",
+                              "Moderately Well",
+                              "Slightly Well",
+                              "Not Well at all"))
+dt_caring_leader <- plotgraph(data$dtcares[data$dtcares <= 5]) + 
+  xlab("caring Leader")+ 
+  ylab("Count") +
+  scale_x_discrete(labels = c("Extremely Well",
+                              "Very Well",
+                              "Moderately Well",
+                              "Slightly Well",
+                              "Not Well at all"))
+dt_dignified_leader <- plotgraph(data$dtdignif[data$dtdignif <= 5]) + 
+  xlab("Dignified Leader")+ 
+  ylab("Count") +
+  scale_x_discrete(labels = c("Extremely Well",
+                              "Very Well",
+                              "Moderately Well",
+                              "Slightly Well",
+                              "Not Well at all"))
+dt_honest_leader <- plotgraph(data$dthonest[data$dthonest <= 5]) + 
+  xlab("Honest Leader")+ 
+  ylab("Count") +
+  scale_x_discrete(labels = c("Extremely Well",
+                              "Very Well",
+                              "Moderately Well",
+                              "Slightly Well",
+                              "Not Well at all"))
+dt_authentic_leader <- plotgraph(data$dtauth[data$dtauth <= 5]) + 
+  xlab("Authentic Leader")+ 
+  ylab("Count") +
+  scale_x_discrete(labels = c("Extremely Well",
+                              "Very Well",
+                              "Moderately Well",
+                              "Slightly Well",
+                              "Not Well at all"))
+dt_divisive_leader <- plotgraph(data$dtdiv[data$dtdiv <= 5]) + 
+  xlab("Divisive Leader")+ 
+  ylab("Count") +
+  scale_x_discrete(labels = c("Extremely Well",
+                              "Very Well",
+                              "Moderately Well",
+                              "Slightly Well",
+                              "Not Well at all"))
+dt_knowledgable_leader <- plotgraph(data$dtknow[data$dtknow <= 5]) + 
+  xlab("Knowledgeable Leader")+ 
+  ylab("Count") +
+  scale_x_discrete(labels = c("Extremely Well",
+                              "Very Well",
+                              "Moderately Well",
+                              "Slightly Well",
+                              "Not Well at all"))
+grid.arrange(dt_strong_leader,dt_effective_leader,dt_caring_leader,
+             dt_dignified_leader,dt_honest_leader,dt_authentic_leader,
+             dt_divisive_leader,dt_knowledgable_leader,nrow = 4,ncol =2)
+```
+Based on the survey, voters strongly consider Trump as not a strong, caring, authentic, honest, knowledgeable  or effective leader who carries himself with dignity. Majority of voters agree that he is a very divisive leader
+
+***Next, we check how people view his performance across various problems***
+
+**Covid and general healthcare**
+```{r}
+covid <- plotgraph(data$covidpres7[data$covidpres7 <= 7]) + 
+  xlab("Rating") + ylab("Count") +
+  scale_x_discrete(labels = c("App ext str",
+                              "App mod str",
+                              "App slightly",
+                              "neither",
+                              "Disapp slightly",
+                              "Dissapp mod str",
+                              "Disapp ext str"))
+healthcare <- plotgraph(data$healthcarepres7[data$healthcarepres7 <= 7]) + 
+  xlab("Rating") + ylab("Count") +
+  scale_x_discrete(labels = c("App ext str",
+                              "App mod str",
+                              "App slightly",
+                              "neither",
+                              "Disapp slightly",
+                              "Dissapp mod str",
+                              "Disapp ext str"))
+ grid.arrange(covid,healthcare,nrow =1, ncol = 2) 
+  
+```
+From the distribution we can see that majority of the people strongly believe that the president has done a real poor job of handling the coronavirus pandemic and just healthcare in general.
+
+**Economy**
+```{r}
+plotgraph(data$econpres7[data$econpres7 <= 7]) + 
+  xlab("Rating") + ylab("Count") +
+  scale_x_discrete(labels = c("App ext str",
+                              "App mod str",
+                              "App slightly",
+                              "neither",
+                              "Disapp slightly",
+                              "Dissapp mod str",
+                              "Disapp ext str"))
+```
+SOme People seem to believe that the president has done a decent job so far with the economy but there are also a lot of people who think he has done a bad job with the economy.
+
+
+***We look at how people feel about the economy and personal finances in the aftermath of the pandemic***
+```{r}
+#First we look at people's opinion about the economy during the current presidency
+plotgraph(data$econnow) + xlab("Opinion") +
+  ylab("Count") +
+  scale_x_discrete(labels = c("Much Better",
+                              "Somewhat Better",
+                              "About the same",
+                              "Somehwat Worse",
+                              "Much worse"))
+
+#Then We look at how worried people are regarding the economy
+plotgraph(data$confecon[data$confecon <= 5]) + xlab("Level of Worry") +
+  ylab("Count") +
+  scale_x_discrete(labels = c("Not at all worried",
+                              "A little worried",
+                              "Moderately worried",
+                              "Very Worried",
+                              "Extremely Worried"))
+
+# Finally we look at how worried people are regarding the economic impact of CoronaVirus
+plotgraph(data$covid2[data$covid2 <= 5]) + xlab("Level of Worry After Covid") +
+  ylab("Count") +
+  scale_x_discrete(labels = c("Extremely Worried",
+                              "Very Worried",
+                              "Moderately worried",
+                              "A little worried",
+                              "Not at all worried"))
+```
+There seems to be good indicator that most people feel that the economy has become worse during the current presidency. We see that there majority of people are extremely worried or very worried about the state of the economy presently. This claim can be supported because so many people have lost their jobs during the past few months. 
+
+***Finally we look at other aspects of the presidency and how people feel about the way Donald Trump has dealt with them***
+```{r}
+#overall job as president
+ plotgraph(data$apppres7[data$apppres7 <= 7]) + 
+  xlab("Rating") + ylab("Count") +
+  scale_x_discrete(labels = c("App ext str",
+                              "App mod str",
+                              "App slightly",
+                              "neither",
+                              "Disapp slightly",
+                              "Dissapp mod str",
+                              "Disapp ext str"))
+#Foreign Relations
+plotgraph(data$frnpres7[data$frnpres7 <= 7]) + 
+  xlab("Rating") + ylab("Count") +
+  scale_x_discrete(labels = c("App ext str",
+                              "App mod str",
+                              "App slightly",
+                              "neither",
+                              "Disapp slightly",
+                              "Dissapp mod str",
+                              "Disapp ext str"))
+#Immigration
+plotgraph(data$immpres7[data$immpres7 <= 7]) + 
+  xlab("Rating") + ylab("Count") +
+  scale_x_discrete(labels = c("App ext str",
+                              "App mod str",
+                              "App slightly",
+                              "neither",
+                              "Disapp slightly",
+                              "Dissapp mod str",
+                              "Disapp ext str"))
+```
+Overall, There seems to be high levels of disapproval among people in terms of Donald Trump's job overall and with respect to foreign relationships and policies regarding immigration. 
+
+
+
+**Conclusions**
+1) It seems like minority voters are favoring Joe Biden over Donald Trump. If the voter turnout for minorities is higher this year compared to 2016 then we may see a change in presidency for the next 4 years
+2) A lot of people in this survey(about 40%) have only up to a high school education which is alarming for one of the superpowers of the world and that directly correlates with a bad economy. 
+3) Based on the distribution of income for families it is evident that the median income of the families is definitely less than the mean income and in the aftermath of coronavirus, small family run businesses have taken a big hit especially within farming industries which makes it hard for these families to survive the economic crisis. 
+4) There seems to be a very strong belief that the president has failed during his tenure to be a good leader and has consistently failed during trying moments for the country. The prime example is the number of fatalities from COVID-19 which have exceeded to over 200000 since March. People believe that a lack of leadership is the main reason that resulted in such high death rates and worsened the economic condition of the country.
+5) currently, the people of USA are pretty worried about the state of the economy and on top of that, based on the graphs above, we can say that people strongly feel that the president has done an abysmal job when it comes to immigration policies and maintaining relationships with other countries.
+
+**Biases**
+1) The sample size is very small and that could have lead to very biased opinions from people
+2) Its hard to validate online studies sometimes because we don't know what kind of people actually took this survey. Also new events keep happening everyday which could influence people's opinions about the state of the country and ultimately their opinions about the president. So, we should take these results with a pinch of salt and acknowledge that they might not be the most updated and reflective opinions. 
