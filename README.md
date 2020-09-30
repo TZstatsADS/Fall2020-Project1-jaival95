@@ -12,7 +12,8 @@ Term: Fall 2020
 + Project title: General feelings towards the president and economic struggles during current presidency
 + This project is conducted by Jaival Desai
 
-+ Project summary: [a short summary] Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
++ Project summary: It seems minorities prefer voting for Joe Biden over Donald Trump.
+There is a strong belief among voters that the president does not have the necessary qualities needed to be a good leader. Voters strongly believe that Donald Trump has done a poor job handling the economy during his tenure, especially during the current pandemic. They also strongly condemn the immigration policies and the way he has handled foreign affairs.
 
 Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
 
